@@ -15,7 +15,6 @@ def disabled_train(self, mode=True):
 
 class Net2NetTransformer(pl.LightningModule):
     def __init__(self,
-                 transformer_config,
                  first_stage_config,
                  cond_stage_config,
                  permuter_config=None,
@@ -38,7 +37,7 @@ class Net2NetTransformer(pl.LightningModule):
         if permuter_config is None:
             permuter_config = {"target": "taming.modules.transformer.permuter.Identity"}
         self.permuter = instantiate_from_config(config=permuter_config)
-        self.transformer = instantiate_from_config(config=transformer_config)
+        # self.transformer = instantiate_from_config(config=transformer_config)
 
         if ckpt_path is not None:
             self.init_from_ckpt(ckpt_path, ignore_keys=ignore_keys)
