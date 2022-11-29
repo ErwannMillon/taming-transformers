@@ -14,7 +14,7 @@ requests
 scikit_image
 scipy
 setuptools
-skimage
+scikit-image
 streamlit
 torch
 torchvision
