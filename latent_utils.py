@@ -11,9 +11,7 @@ def get_latent_from_path(path, model, device="mps"):
     x_latent, _, [_, _, indices] = model.encode(x_processed)
     return x_latent
     
-    
 def show_latent(model, latent, device="mps"):
-
     dec = model.decode(latent.to(device))
     im = custom_to_pil(dec[0])
     plt.figure(figsize=(3, 3))
