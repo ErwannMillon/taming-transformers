@@ -42,7 +42,7 @@ A suitable [conda](https://conda.io/) environment named `taming` can be created
 and activated with:
 
 ```
-conda env create -f environment.yaml
+conda env create -f environment.yam
 conda activate taming
 ```
 ## Overview of pretrained models

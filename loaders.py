@@ -8,13 +8,13 @@ import numpy as np
 import taming
 from utils import get_device
 
-def load_default():
-    device = get_device()
+def load_default(device):
+    # device = get_device()
     ckpt_path = "logs/2021-04-23T18-11-19_celebahq_transformer/checkpoints/last.ckpt"
     conf_path = "./unwrapped.yaml"
     config = load_config(conf_path, display=False)
     model = taming.models.vqgan.VQModel(**config.model.params)
-    sd = torch.load("./vqgan_only.pt", map_location="mps")
+    sd = torch.load("./vqgan_only.pt", map_location=device)
     model.load_state_dict(sd, strict=True)
     model.to(device)
     return model

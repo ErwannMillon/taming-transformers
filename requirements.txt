@@ -1,10 +1,13 @@
+
 albumentations
+dlib
 einops
+gradio
 imageio
+matplotlib
 more_itertools
 numpy
 omegaconf
-opencv_python_headless
 Pillow
 pudb
 pytorch_lightning
@@ -13,10 +16,10 @@ requests
 scikit_image
 scipy
 setuptools
-scikit-image
 streamlit
 torch
 torchvision
 tqdm
 transformers
 typing_extensions
+
