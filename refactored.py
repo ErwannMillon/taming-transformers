@@ -159,10 +159,9 @@ def train(model, latent, text_prompt, steps, display_every=10):
     # with torch.inference_mode():
         # z.copy_(z.maximum(z_min).minimum(z_max))
 
-def main():
+def main(device):
     # device = torch.cuda.is_available() else "cpu"
     image_path = "./test_data/face.jpeg"
-    device = "mps"
     vqgan = load_default(device)
     clip = CLIPWrapper(device)
     model = VQGAN_CLIP(vqgan, clip)
@@ -170,5 +169,6 @@ def main():
     prompt = "a picture of a man"
     train(model, latent, prompt, 100)
 if __name__ == "__main__":
-    main()
+    device = "mps"
+    main(device)
 
