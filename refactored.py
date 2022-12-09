@@ -166,7 +166,7 @@ def main():
     vqgan = load_default(device)
     clip = CLIPWrapper(device)
     model = VQGAN_CLIP(vqgan, clip)
-    latent = get_latent_from_path(image_path, vqgan)
+    latent = get_latent_from_path(image_path, vqgan, device=device)
     prompt = "a picture of a man"
     train(model, latent, prompt, 100)
 if __name__ == "__main__":
