@@ -34,16 +34,19 @@ def preprocess_vqgan(x):
   x = 2.*x - 1.
   return x
 
-def custom_to_pil(x):
+def custom_to_pil(x, process=True):
   x = x.detach().cpu()
-  x = torch.clamp(x, -1., 1.)
-  x = (x + 1.)/2.
+  if process:
+    x = torch.clamp(x, -1., 1.)
+    x = (x + 1.)/2.
   x = x.permute(1,2,0).numpy()
-  x = (255*x).astype(np.uint8)
+  if process:
+    x = (255*x).astype(np.uint8)
   x = Image.fromarray(x)
   if not x.mode == "RGB":
     x = x.convert("RGB")
   return x
+
 
 def stack_reconstructions(input, x0, x1, x2, x3, titles=[]):
   assert input.size == x1.size == x2.size == x3.size
