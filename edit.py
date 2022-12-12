@@ -7,9 +7,8 @@ from loaders import load_config
 from utils import get_device
 import matplotlib.pyplot as plt
 import PIL
-device = "mps"
-def get_embedding(model, path=None, img=None):
-    device = "mps"
+
+def get_embedding(model, path=None, img=None, device="cpu"):
     assert path is None or img is None, "Input either path or tensor"
     if img is not None:
         raise NotImplementedError
@@ -19,15 +18,14 @@ def get_embedding(model, path=None, img=None):
     return x_latent
 
     
-def blend_paths(model, path1, path2, quantize=False, weight=0.5, show=True):
-    device = "mps"
+def blend_paths(model, path1, path2, quantize=False, weight=0.5, show=True, device="cpu"):
     x = preprocess(PIL.Image.open(path1), target_image_size=256).to(device)
     y = preprocess(PIL.Image.open(path2), target_image_size=256).to(device)
     x_latent, y_latent = get_embedding(model, path=path1), get_embedding(model, path=path2)
     z = torch.lerp(x_latent.cpu(), y_latent.cpu(), weight)
     if quantize:
-        z = model.quantize(z.to("mps"))[0]
-    decoded = model.decode(z.to("mps"))[0]
+        z = model.quantize(z.to(device))[0]
+    decoded = model.decode(z.to(device))[0]
     if show:
         plt.figure(figsize=(10, 20))
         plt.subplot(1, 3, 1)
@@ -51,7 +49,7 @@ if __name__ == "__main__":
     sd = torch.load("./vqgan_only.pt", map_location="mps")
     model.load_state_dict(sd, strict=True)
     model.to(device)
-    blend(model, "./test_data/face.jpeg", "./test_data/face2.jpeg", quantize=False, weight=.5)
+    blend_paths(model, "./test_data/face.jpeg", "./test_data/face2.jpeg", quantize=False, weight=.5)
     plt.show()
 
     demo = gr.Interface(
