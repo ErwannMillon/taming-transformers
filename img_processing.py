@@ -47,6 +47,15 @@ def custom_to_pil(x, process=True):
     x = x.convert("RGB")
   return x
 
+def get_pil(x):
+  x = torch.clamp(x, -1., 1.)
+  x = (x + 1.)/2.
+  x = x.permute(1,2,0)
+  return x
+
+def loop_post_process(x):
+  x = get_pil(x.squeeze())
+  return x.permute(2, 0, 1).unsqueeze(0)
 
 def stack_reconstructions(input, x0, x1, x2, x3, titles=[]):
   assert input.size == x1.size == x2.size == x3.size
