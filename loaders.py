@@ -2,7 +2,7 @@ import importlib
 import yaml
 import torch
 from omegaconf import OmegaConf
-from taming.models.vqgan import VQModel, GumbelVQ
+from taming.models.vqgan import VQModel
 from PIL import Image
 import numpy as np
 import taming

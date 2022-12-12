@@ -119,9 +119,13 @@ class CLIPWrapper():
         tokenized_text = self.tokenize(text).to(self.device)
         embedding = self.model.encode_text(tokenized_text).float()
         return embedding
-    def get_img_embedding(self, image):
+    def get_normed_cutouts(self, image):
         cutouts = self.make_cutouts(image)
-        emb = self.model.encode_image(self.normalize(cutouts)).float()
+        norm_cutouts = self.normalize(cutouts)
+        return norm_cutouts
+    def get_img_embedding(self, image):
+        cutouts = self.get_normed_cutouts(image)
+        emb = self.model.encode_image(cutouts).float()
         return emb
 
 
@@ -139,8 +143,8 @@ class VQGAN_CLIP(nn.Module):
         norm_clip_img_embed = F.normalize(clip_img_embed.unsqueeze(1), dim=2)
         norm_text_emb = F.normalize(text_emb.unsqueeze(0), dim=2)
         text_img_similarity = norm_clip_img_embed.sub(norm_text_emb).norm(dim=2).div(2).arcsin().pow(2).mul(2)
-        text_img_similarity = replace_grad(text_img_similarity, text_img_similarity).mean()
-        return text_img_similarity # return loss
+        # text_img_similarity = replace_grad(text_img_similarity, text_img_similarity).mean()
+        return text_img_similarity.mean() # return loss
 
 def train(model, latent, text_prompt, steps, display_every=10):
     prompt_embed = model.clip.get_text_embedding(text_prompt)
@@ -167,7 +171,13 @@ def main(device):
     model = VQGAN_CLIP(vqgan, clip)
     latent = get_latent_from_path(image_path, vqgan, device=device)
     prompt = "a picture of a man"
-    train(model, latent, prompt, 100)
+    from transformers import CLIPProcessor, CLIPModel
+    hf_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
+    hf_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+    emb1 = clip.get_text_embedding(prompt)
+    emb2 = hf_processor(text=prompt, return_tensors="pt")
+    print()
+    # train(model, latent, prompt, 100)
 if __name__ == "__main__":
     device = "mps"
     main(device)

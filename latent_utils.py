@@ -9,6 +9,7 @@ def get_latent_from_path(path, model, device="mps"):
     print(device)
     x_processed = preprocess_vqgan(x).to(device)
     x_latent, _, [_, _, indices] = model.encode(x_processed)
+    print(x_latent)
     return x_latent
     
 def show_latent(model, latent, device="mps"):
